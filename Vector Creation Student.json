@@ -1,0 +1,214 @@
+{
+  "name": "Vector Creation Student",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "16-a3nQEDnksonJAOJc1SwD90VrLrLTYz",
+          "mode": "list",
+          "cachedResultName": "AdvanceAutomation",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/16-a3nQEDnksonJAOJc1SwD90VrLrLTYz"
+        },
+        "event": "fileCreated",
+        "options": {
+          "fileType": "all"
+        }
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3d152fe9-95d4-4028-b790-09d7fdff9272",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "KIp7A2fQA1MSW1p9",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1tZ5H3EExm0036hnewOZyPmuApYzn4RO2",
+          "mode": "list",
+          "cachedResultName": "Jain_University_Student_Handbook_FAQs.pdf",
+          "cachedResultUrl": "https://drive.google.com/file/d/1tZ5H3EExm0036hnewOZyPmuApYzn4RO2/view?usp=drivesdk"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        144,
+        0
+      ],
+      "id": "937d3b20-bdb0-4e68-a607-3a3412adae38",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "KIp7A2fQA1MSW1p9",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "studentassist",
+          "mode": "list",
+          "cachedResultName": "studentassist"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        352,
+        0
+      ],
+      "id": "7e9a1560-8a46-4f7d-8e61-a1fc825b2f46",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "HJfU8QhvcYWXxFTa",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "dimensions": 1536
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        272,
+        224
+      ],
+      "id": "473fe692-3eec-4dba-9e7d-9cccf286792f",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "R5ONmZ4YhDcoC0tC",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "textSplittingMode": "custom",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        496,
+        208
+      ],
+      "id": "007a2c74-4ad4-4495-8c3a-a0fb6b2a985d",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "chunkOverlap": 100,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        688,
+        400
+      ],
+      "id": "019c7631-f8bc-41e2-a774-3ad5cd64d07c",
+      "name": "Recursive Character Text Splitter"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "25f58e7f-652e-47c8-b344-e8ca4fc458dc",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "19adec0e7b270696b0e6d84175df1adb04b1257fd15041e5e9881651daa931c2"
+  },
+  "id": "gEhY4jPF7rLbkDbi",
+  "tags": []
+}
