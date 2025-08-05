@@ -23,7 +23,8 @@ This project integrates [n8n](https://n8n.io), [Telegram Bot API](https://core.t
 > - *What is the attendance requirement?*  
 > - *Are hostel facilities available?*  
 > - *Is there a refund policy for withdrawals?*
-and the quick demo of the telegram here -> [Jain University Student Assist Bot - Demo](./JainUniversityStudentAssistBot.mp4)
+
+and the quick demo of the telegram here -> [Jain University Student Assist Bot - Demo]([./JainUniversityStudentAssistBot.mp4](https://youtu.be/mvgWSasqwJY))
 
 ---
 
